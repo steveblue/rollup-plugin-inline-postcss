@@ -52,6 +52,13 @@ css`
 `
 ```
 
+The default regex for selecting this template literal is:
+
+```js
+/css\`((?:\\.|[^"\\])*)\`/g
+```
+
+
 ## Config
 
 This plugin honors `postcss.config.js` in the root directory and will look for environment variables based on the current `NODE_ENV`. The example postcss.config.js below demonstrates minifying CSS with the `postcss-csso` plugin only when the NODE_ENV is set to `prod`.
