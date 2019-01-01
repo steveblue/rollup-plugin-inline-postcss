@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-inline-postcss",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.0",
   "description": "Rollup plugin that transforms inline styling with PostCSS",
   "main": "index.js",
   "scripts": {
