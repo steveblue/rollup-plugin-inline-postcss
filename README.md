@@ -40,16 +40,16 @@ This plugin by default looks for a template literal in JavaScript (or TypeScript
 
 ```css
 css`
-:host {
-  display: block;
-  background: rgba(24, 24, 24, 1);
-  width: 200px;
-  height: 200px;
-  color: white;
-  padding: 1em;
-  border-radius: 8px;
-}
-`,
+  :host {
+    display: block;
+    background: rgba(24, 24, 24, 1);
+    width: 200px;
+    height: 200px;
+    color: white;
+    padding: 1em;
+    border-radius: 8px;
+  }
+`
 ```
 
 ## Config
