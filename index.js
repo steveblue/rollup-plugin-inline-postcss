@@ -1,7 +1,7 @@
 // rollup-plugin-inline-postcss.js
-import path from 'path';
-import postcss from 'postcss';
-import findup from 'findup';
+import * as path from 'path';
+import * as postcss from 'postcss';
+import * as findup from 'findup';
 import { createFilter } from 'rollup-pluginutils';
 
 export default function inlinePostCSS(options = {}) {
@@ -13,8 +13,8 @@ export default function inlinePostCSS(options = {}) {
 			if (!filter(id)) return;
 			if (!code.match(styleRegex)) return;
 			try {
-        const configFile = findup.sync(__dirname, 'postcss.config.js');
-				const config = require(configFile)({
+        const configFolder = findup.sync(__dirname, 'postcss.config.js');
+				const config = require(path.join(configFolder, 'postcss.config.js'))({
 					env: process.env.NODE_ENV
 				});
 				const css = code.match(styleRegex)[0].split('`')[1];
