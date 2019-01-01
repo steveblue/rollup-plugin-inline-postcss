@@ -15,7 +15,8 @@ function inlinePostCSS(options = {}) {
             if (!code.match(styleRegex))
                 return;
             try {
-                const config = require('./postcss.config')({
+                const configFile = findup.sync(__dirname, 'postcss.config.js');
+                const config = require(configFile)({
                     env: process.env.NODE_ENV
                 });
                 const css = code.match(styleRegex)[0].split('`')[1];
