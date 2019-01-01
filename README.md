@@ -31,7 +31,7 @@ export default {
 |-----------|--------------|
 | include  |   Files to include |
 | exclude  |   Files to exclude |
-| styleRegex  |  Regex for selecting CSS in file. The default is ```/css\`((?:\\.|[^"\\])*)\`/g``` |
+| styleRegex  |  Regex for selecting CSS in file |
 
 
 ## Template Literals in JavaScript
