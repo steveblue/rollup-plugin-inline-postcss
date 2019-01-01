@@ -1,6 +1,7 @@
 // rollup-plugin-inline-postcss.js
 import path from 'path';
 import postcss from 'postcss';
+import findup from 'findup';
 import { createFilter } from 'rollup-pluginutils';
 
 export default function inlinePostCSS(options = {}) {

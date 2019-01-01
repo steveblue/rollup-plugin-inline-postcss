@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // rollup-plugin-inline-postcss.js
 const path_1 = require("path");
 const postcss_1 = require("postcss");
+const findup_1 = require("findup");
 const rollup_pluginutils_1 = require("rollup-pluginutils");
 function inlinePostCSS(options = {}) {
     const filter = rollup_pluginutils_1.createFilter(options.include, options.exclude);
@@ -15,7 +16,7 @@ function inlinePostCSS(options = {}) {
             if (!code.match(styleRegex))
                 return;
             try {
-                const configFile = findup.sync(__dirname, 'postcss.config.js');
+                const configFile = findup_1.default.sync(__dirname, 'postcss.config.js');
                 const config = require(configFile)({
                     env: process.env.NODE_ENV
                 });
