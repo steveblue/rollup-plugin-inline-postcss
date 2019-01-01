@@ -40,23 +40,23 @@ This plugin by default looks for a template literal in JavaScript (or TypeScript
 
 ```css
 css`
-		:host {
-			display: block;
-			background: rgba(24, 24, 24, 1);
-			width: 200px;
-			height: 200px;
-			color: white;
-			padding: 1em;
-			border-radius: 8px;
-		}
-	`,
+:host {
+  display: block;
+  background: rgba(24, 24, 24, 1);
+  width: 200px;
+  height: 200px;
+  color: white;
+  padding: 1em;
+  border-radius: 8px;
+}
+`,
 ```
 
 ## Config
 
 This plugin honors `postcss.config.js` in the root directory and will look for environment variables based on the current `NODE_ENV`. The example postcss.config.js below demonstrates minifying CSS with the `postcss-csso` plugin only when the NODE_ENV is set to `prod`.
 
-```
+```js
 module.exports = ctx => ({
   plugins: {
     'postcss-csso': ctx.env === 'prod' ? {} : false
