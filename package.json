@@ -1,0 +1,28 @@
+{
+  "name": "rollup-plugin-inline-postcss",
+  "version": "1.0.0",
+  "description": "Rollup plugin that transforms inline styling with PostCSS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steveblue/rollup-plugin-inline-postcss.git"
+  },
+  "keywords": [
+    "rollup",
+    "postcss",
+    "plugin"
+  ],
+  "author": "Steve Belovarich",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/steveblue/rollup-plugin-inline-postcss/issues"
+  },
+  "homepage": "https://github.com/steveblue/rollup-plugin-inline-postcss#readme",
+  "dependencies": {
+    "postcss": "^7.0.7",
+    "rollup": "^1.0.0"
+  }
+}
