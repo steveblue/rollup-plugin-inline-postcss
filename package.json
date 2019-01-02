@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint -c tslint.json 'index.ts'",
     "build": "tsc -p tsconfig.json"
   },
   "repository": {
@@ -25,9 +26,12 @@
   "dependencies": {
     "findup": "^0.1.5",
     "postcss": "^7.0.7",
-    "rollup": "^1.0.0"
+    "rollup": "^1.0.0",
+    "rollup-pluginutils": "^2.3.3"
   },
   "devDependencies": {
+    "jest": "^23.6.0",
+    "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   }
 }
