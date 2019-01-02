@@ -5,12 +5,12 @@ import * as postcss from "postcss";
 import { createFilter } from "rollup-pluginutils";
 
 export interface InlinePostCSSOptions {
-	  from?: string;
-		to?: string;
+    from?: string;
+    to?: string;
     include?: string[];
     exclude?: string[];
     styleRegex?: RegExp;
-		failOnError?: any;
+    failOnError?: any;
 }
 
 export interface IPostCSSOptions {
@@ -23,10 +23,10 @@ export interface IPostCSSOptions {
 }
 
 export default function inlinePostCSS(options?: InlinePostCSSOptions) {
-	if (!options) options = {};
-  const filter = createFilter(options.include, options.exclude);
-  const styleRegex: RegExp = options.styleRegex ? options.styleRegex : /css\`((?:\\.|[^"\\])*)\`/g;
-  return {
+ if (!options) { options = {}; }
+ const filter = createFilter(options.include, options.exclude);
+ const styleRegex: RegExp = options.styleRegex ? options.styleRegex : /css\`((?:\\.|[^"\\])*)\`/g;
+ return {
     name: "inline-postcss",
     transform(code: string, id: string) {
       if (!filter(id)) { return; }

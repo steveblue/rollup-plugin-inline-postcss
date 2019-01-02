@@ -4,7 +4,7 @@
   "description": "Rollup plugin that transforms inline styling with PostCSS",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run lint && jest",
     "lint": "tslint -c tslint.json 'index.ts'",
     "build": "tsc -p tsconfig.json"
   },
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "jest": "^23.6.0",
+    "postcss-csso": "^3.0.0",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   }
