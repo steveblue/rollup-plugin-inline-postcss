@@ -3,7 +3,7 @@ class MyButtonComponent extends ButtonComponent {
 		super();
 		this.style = css`
 			:host {
-				background: rgba(24, 24, 24, 1);
+				background: #abcefe;
 				cursor: pointer;
 				color: white;
 				font-weight: 400;
