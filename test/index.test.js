@@ -15,36 +15,47 @@ async function write({
 }) {
 
   const jsCodePath = path.join(outDir, 'bundle.js');
+
   const bundle = await rollup({
     input: fixture(input),
     plugins: [
-      inlinePostCSS(options)
+      inlinePostCSS({
+        styleRegex: /css\`((.|\n)*)\`(;)/gm,
+        plugins:  [
+          require('postcss-rgb-plz')
+        ]
+      })
     ]
   })
 
   await bundle.write({
-    format: 'cjs',
+    format: 'esm',
     file: path.join(outDir, 'bundle.js')
-  })
+  });
 
   return {
       jsCode() {
         return fs.readFile(jsCodePath, 'utf8')
       },
-      hasLineBreaksInCss() {
+      hasRGBColorValues() {
         const file = fs.readFileSync(path.join(outDir, 'bundle.js'), 'utf8');
-        const style = file.match(/css\`((?:\\.|[^"\\])*)\`/g)[0];
-        return /\r|\n/.exec(style) == null ? false : true;
+        const style = file.match(/\`((.|\n)*)\`/gm)[0];
+        return /(#abcefe)/gm.exec(style) == null ? true : false;
+      },
+      isMinified() {
+        const file = fs.readFileSync(path.join(outDir, 'bundle.js'), 'utf8');
+        const style = file.match(/\`((.|\n)*)\`/gm)[0];
+        return /\r|\n/.exec(style) == null ? true : false;
       }
   }
 
 }
 
-test('inlineCSS', async () => {
+test('inline css has rgb values', async () => {
   const res = await write({
     input: 'component.js',
     outDir: 'test/onExtract',
     options: {}
   })
-  expect(await res.hasLineBreaksInCss()).toBe(false)
+  expect(await res.hasRGBColorValues()).toBe(true)
 })

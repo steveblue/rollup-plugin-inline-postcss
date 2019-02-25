@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "npm run lint && jest",
-    "lint": "tslint -c tslint.json 'index.ts'",
+    "lint": "tslint index.ts",
     "build": "tsc -p tsconfig.json"
   },
   "repository": {
@@ -24,15 +24,23 @@
   },
   "homepage": "https://github.com/steveblue/rollup-plugin-inline-postcss#readme",
   "dependencies": {
+    "cssesc": "^3.0.0",
     "findup": "^0.1.5",
     "postcss": "^7.0.7",
     "rollup": "^1.0.0",
     "rollup-pluginutils": "^2.3.3"
   },
   "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "jest": "^23.6.0",
     "postcss-csso": "^3.0.0",
-    "tslint": "^5.12.0",
+    "postcss-rgb-plz": "^2.0.2",
+    "tslint": "^5.13.0",
     "typescript": "^3.2.2"
   }
 }

@@ -1,15 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// rollup-plugin-inline-postcss.js
 const findup = require("findup");
 const path = require("path");
 const postcss = require("postcss");
 const rollup_pluginutils_1 = require("rollup-pluginutils");
-function inlinePostCSS(options) {
-    if (!options)
-        options = {};
+function inlinePostCSS(options = {}) {
     const filter = rollup_pluginutils_1.createFilter(options.include, options.exclude);
-    const styleRegex = options.styleRegex ? options.styleRegex : /css\`((?:\\.|[^"\\])*)\`/g;
+    const styleRegex = options.styleRegex ? options.styleRegex : /(css\`((.|\n)*)\`)/g;
     return {
         name: "inline-postcss",
         transform(code, id) {
@@ -19,9 +16,19 @@ function inlinePostCSS(options) {
             if (!code.match(styleRegex)) {
                 return;
             }
+            let punc = code.match(styleRegex)[0][code.match(styleRegex)[0].length - 1];
+            if (punc !== "," && punc !== ";") {
+                punc = null;
+            }
             try {
-                const configFolder = findup.sync(__dirname, "postcss.config.js");
-                const config = require(path.join(configFolder, "postcss.config.js"))({
+                let configFolder;
+                if (!options.plugins) {
+                    configFolder = findup.sync(__dirname, "postcss.config.js");
+                }
+                else {
+                    configFolder = "";
+                }
+                const config = options.plugins ? options.plugins : require(path.join(configFolder, "postcss.config.js"))({
                     env: process.env.NODE_ENV,
                 });
                 const css = code.match(styleRegex)[0].split("`")[1];
@@ -32,12 +39,13 @@ function inlinePostCSS(options) {
                         annotation: false,
                     },
                 };
-                const outputConfig = Object.keys(config.plugins).filter((key) => config.plugins[key])
+                const outputConfig = options.plugins ? options.plugins : Object.keys(config.plugins)
+                    .filter((key) => config.plugins[key])
                     .map((key) => require(key));
                 return postcss(outputConfig)
                     .process(css, opts)
                     .then((result) => {
-                    code = code.replace(styleRegex, `css\`${result.css}\``);
+                    code = code.replace(styleRegex, `\`${result.css}\`${punc ? punc : ""}`);
                     const map = result.map
                         ? JSON.parse(result.map)
                         : { mappings: "" };
