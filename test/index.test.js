@@ -16,6 +16,7 @@ async function write({ input, outDir, options }) {
     plugins: [
       inlinePostCSS({
         styleRegex: /css\`((.|\n)*)\`(;)/gm,
+        escapeTemplateString: true,
         plugins: [require('postcss-rgb-plz')],
       }),
     ],
