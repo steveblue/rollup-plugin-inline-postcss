@@ -1,19 +1,17 @@
 class MyButtonComponent extends ButtonComponent {
-	constructor() {
-		super();
-		this.style = css`
-			:host {
-				background: #abcefe;
-				cursor: pointer;
-				color: white;
-				font-weight: 400;
-			}
-		`;
-	}
+  constructor() {
+    super();
+    this.style = css`
+      :host {
+        background: #abcefe;
+        cursor: pointer;
+        color: white;
+        font-weight: 400;
+      }
+    `;
+  }
 
-	onClick(event) {
-
-	}
+  onClick(event) {}
 }
 
-customElements.define('my-button', MyButtonComponent, { extends: 'button'});
+customElements.define('my-button', MyButtonComponent, { extends: 'button' });

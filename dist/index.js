@@ -1,14 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+// rollup-plugin-inline-postcss.js
 const findup = require("findup");
 const path = require("path");
-const postcss = require("postcss");
+const postcss_1 = require("postcss");
 const rollup_pluginutils_1 = require("rollup-pluginutils");
 function inlinePostCSS(options = {}) {
     const filter = rollup_pluginutils_1.createFilter(options.include, options.exclude);
-    const styleRegex = options.styleRegex ? options.styleRegex : /(css\`((.|\n)*)\`)/g;
+    const styleRegex = options.styleRegex
+        ? options.styleRegex
+        : /(css\`((.|\n)*)\`)/g;
     return {
-        name: "inline-postcss",
+        name: 'inline-postcss',
         transform(code, id) {
             if (!filter(id)) {
                 return;
@@ -17,38 +20,43 @@ function inlinePostCSS(options = {}) {
                 return;
             }
             let punc = code.match(styleRegex)[0][code.match(styleRegex)[0].length - 1];
-            if (punc !== "," && punc !== ";") {
+            if (punc !== ',' && punc !== ';') {
                 punc = null;
             }
             try {
                 let configFolder;
                 if (!options.plugins) {
-                    configFolder = findup.sync(__dirname, "postcss.config.js");
+                    configFolder = findup.sync(__dirname, 'postcss.config.js');
                 }
                 else {
-                    configFolder = "";
+                    configFolder = '';
                 }
-                const config = options.plugins ? options.plugins : require(path.join(configFolder, "postcss.config.js"))({
-                    env: process.env.NODE_ENV,
-                });
-                const css = code.match(styleRegex)[0].split("`")[1];
-                const opts = { from: options.from ? path.join(process.cwd(), options.from) : id,
+                const config = options.plugins
+                    ? options.plugins
+                    : require(path.join(configFolder, 'postcss.config.js'))({
+                        env: process.env.NODE_ENV,
+                    });
+                const css = code.match(styleRegex)[0].split('`')[1];
+                const opts = {
+                    from: options.from ? path.join(process.cwd(), options.from) : id,
                     to: options.to ? path.join(process.cwd(), options.to) : id,
                     map: {
                         inline: false,
                         annotation: false,
                     },
                 };
-                const outputConfig = options.plugins ? options.plugins : Object.keys(config.plugins)
-                    .filter((key) => config.plugins[key])
-                    .map((key) => require(key));
-                return postcss(outputConfig)
+                const outputConfig = options.plugins
+                    ? options.plugins
+                    : Object.keys(config.plugins)
+                        .filter((key) => config.plugins[key])
+                        .map((key) => require(key));
+                return postcss_1.default(outputConfig)
                     .process(css, opts)
                     .then((result) => {
-                    code = code.replace(styleRegex, `\`${result.css}\`${punc ? punc : ""}`);
+                    code = code.replace(styleRegex, `\`${result.css}\`${punc ? punc : ''}`);
                     const map = result.map
                         ? JSON.parse(result.map)
-                        : { mappings: "" };
+                        : { mappings: '' };
                     return {
                         code,
                         map,
