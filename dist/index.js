@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // rollup-plugin-inline-postcss.js
 const findup = require("findup");
 const path = require("path");
-const postcss_1 = require("postcss");
 const rollup_pluginutils_1 = require("rollup-pluginutils");
+const postcss = require('postcss');
 function inlinePostCSS(options = {}) {
     const filter = rollup_pluginutils_1.createFilter(options.include, options.exclude);
     const styleRegex = options.styleRegex
@@ -50,7 +50,7 @@ function inlinePostCSS(options = {}) {
                     : Object.keys(config.plugins)
                         .filter((key) => config.plugins[key])
                         .map((key) => require(key));
-                return postcss_1.default(outputConfig)
+                return postcss(outputConfig)
                     .process(css, opts)
                     .then((result) => {
                     code = code.replace(styleRegex, `\`${result.css}\`${punc ? punc : ''}`);
