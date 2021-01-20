@@ -10,6 +10,7 @@ function inlinePostCSS(options = {}) {
     const styleRegex = options.styleRegex
         ? options.styleRegex
         : /(css\`((.|\n)*)\`)/g;
+    const hasCustomRegex = options.styleRegex ? true : false;
     return {
         name: 'inline-postcss',
         transform(code, id) {
@@ -36,7 +37,10 @@ function inlinePostCSS(options = {}) {
                     : require(path.join(configFolder, 'postcss.config.js'))({
                         env: process.env.NODE_ENV,
                     });
-                const css = code.match(styleRegex)[0].split('`')[1];
+                let css = code.match(styleRegex)[0];
+                if (options.escapeTemplateString || !hasCustomRegex) {
+                    css = css.split('`')[1];
+                }
                 const opts = {
                     from: options.from ? path.join(process.cwd(), options.from) : id,
                     to: options.to ? path.join(process.cwd(), options.to) : id,
