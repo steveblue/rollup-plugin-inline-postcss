@@ -32,6 +32,7 @@ export default {
 | include  |   Files to include |
 | exclude  |   Files to exclude |
 | styleRegex  |  Regex for selecting CSS in file |
+| escapeTemplateString  | Set to `true` to escape template string |
 
 
 ## Template Literals in JavaScript
