@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "deploy": "./deploy.sh",
-    "prepare": "cp src/package.json dist/package.json && cp README.md dist/README.md",
+    "prepare": "cp src/package.json dist/package.json && cp README.md dist/README.md && cp CHANGELOG.md dist/CHANGELOG.md",
     "prettier": "prettier --write .",
     "test": "jest",
     "version": "./version.sh"
