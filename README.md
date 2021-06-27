@@ -26,11 +26,12 @@ export default {
 
 ## Options
 
-
 | Property  | Description  |
 |-----------|--------------|
 | include  |   Files to include |
 | exclude  |   Files to exclude |
+| cwd  | Path to postcss.config.js |
+| escapeTemplateString  | Set to `true` to escape template string |
 | styleRegex  |  Regex for selecting CSS in file |
 
 
@@ -58,7 +59,6 @@ The default regex for selecting this template literal is:
 /css\`((?:\\.|[^"\\])*)\`/g
 ```
 
-
 ## Config
 
 This plugin honors `postcss.config.js` in the root directory and will look for environment variables based on the current `NODE_ENV`. The example postcss.config.js below demonstrates minifying CSS with the `postcss-csso` plugin only when the NODE_ENV is set to `prod`.
@@ -71,3 +71,10 @@ module.exports = ctx => ({
 })
 ```
 
+## Development
+
+`npm run build` compiles the plugin.
+
+`npm run test` runs the tests.
+
+`npm run version` versions the package, run with `SEMVER` environment variable et to either `patch`, `minor`, or `major`.
