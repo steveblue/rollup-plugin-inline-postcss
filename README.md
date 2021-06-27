@@ -15,25 +15,20 @@ import resolve from 'rollup-plugin-node-resolve';
 import inlinePostCSS from 'rollup-plugin-inline-postcss';
 
 export default {
-        input: 'src/main.js',
-        plugins: [
-            resolve(),
-            inlinePostCSS()
-        ]
-    }
-
+  input: 'src/main.js',
+  plugins: [resolve(), inlinePostCSS()],
+};
 ```
 
 ## Options
 
-| Property  | Description  |
-|-----------|--------------|
-| include  |   Files to include |
-| exclude  |   Files to exclude |
-| cwd  | Path to postcss.config.js |
-| escapeTemplateString  | Set to `true` to escape template string |
-| styleRegex  |  Regex for selecting CSS in file |
-
+| Property             | Description                             |
+| -------------------- | --------------------------------------- |
+| include              | Files to include                        |
+| exclude              | Files to exclude                        |
+| cwd                  | Path to postcss.config.js               |
+| escapeTemplateString | Set to `true` to escape template string |
+| styleRegex           | Regex for selecting CSS in file         |
 
 ## Template Literals in JavaScript
 
@@ -56,7 +51,7 @@ css`
 The default regex for selecting this template literal is:
 
 ```js
-/css\`((?:\\.|[^"\\])*)\`/g
+/css\`((?:\\.|[^"\\])*)\`/g;
 ```
 
 ## Config
@@ -64,11 +59,11 @@ The default regex for selecting this template literal is:
 This plugin honors `postcss.config.js` in the root directory and will look for environment variables based on the current `NODE_ENV`. The example postcss.config.js below demonstrates minifying CSS with the `postcss-csso` plugin only when the NODE_ENV is set to `prod`.
 
 ```js
-module.exports = ctx => ({
+module.exports = (ctx) => ({
   plugins: {
-    'postcss-csso': ctx.env === 'prod' ? {} : false
-  }
-})
+    'postcss-csso': ctx.env === 'prod' ? {} : false,
+  },
+});
 ```
 
 ## Development

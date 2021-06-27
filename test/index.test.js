@@ -32,8 +32,7 @@ async function write({ input, outDir }) {
     ],
   });
 
-
-  await  bundleFromPlugins.write({
+  await bundleFromPlugins.write({
     format: 'esm',
     file: path.join(outDir, 'bundle.js'),
   });
