@@ -15,7 +15,6 @@ async function write({ input, outDir }) {
     input: fixture(input),
     plugins: [
       inlinePostCSS({
-        styleRegex: /css\`((.|\n)*)\`(;)/gm,
         escapeTemplateString: true,
         plugins: [require('postcss-csso'), require('postcss-rgb-plz')],
       }),
@@ -32,12 +31,27 @@ async function write({ input, outDir }) {
     ],
   });
 
+  const bundleFromExternalPostCSSConfig = await rollup({
+    input: fixture(input),
+    plugins: [
+      inlinePostCSS({
+        escapeTemplateString: true,
+        configPath: path.join(__dirname, 'config'),
+      }),
+    ],
+  });
+
   await bundleFromPlugins.write({
     format: 'esm',
     file: path.join(outDir, 'bundle.js'),
   });
 
   await bundleFromPostCSSConfig.write({
+    format: 'esm',
+    file: path.join(outDir, 'bundle.config.js'),
+  });
+
+  await bundleFromExternalPostCSSConfig.write({
     format: 'esm',
     file: path.join(outDir, 'bundle.external.js'),
   });
@@ -67,6 +81,8 @@ test('inline css is processed', async () => {
   });
   expect(await res.hasRGBColorValues('bundle.js')).toBe(true);
   expect(await res.isMinified('bundle.js')).toBe(true);
+  expect(await res.hasRGBColorValues('bundle.config.js')).toBe(true);
+  expect(await res.isMinified('bundle.config.js')).toBe(true);
   expect(await res.hasRGBColorValues('bundle.external.js')).toBe(true);
   expect(await res.isMinified('bundle.external.js')).toBe(true);
 });

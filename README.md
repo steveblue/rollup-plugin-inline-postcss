@@ -22,13 +22,13 @@ export default {
 
 ## Options
 
-| Property             | Description                             |
-| -------------------- | --------------------------------------- |
-| include              | Files to include                        |
-| exclude              | Files to exclude                        |
-| cwd                  | Path to postcss.config.js               |
-| escapeTemplateString | Set to `true` to escape template string |
-| styleRegex           | Regex for selecting CSS in file         |
+| Property             | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| include              | Files to include                                  |
+| exclude              | Files to exclude                                  |
+| styleRegex           | Custom regex for selecting CSS in file            |
+| escapeTemplateString | Set to `true` to escape template string           |
+| configPath           | Path to directory that contains postcss.config.js |
 
 ## Template Literals in JavaScript
 

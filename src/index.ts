@@ -27,18 +27,24 @@ export default function inlinePostCSS(options: any = {}) {
         punc = null;
       }
       try {
-        const cwd = options.cwd || __dirname;
-        let configFolder;
+        let configPath;
         if (!options.plugins) {
-          configFolder = findup.sync(cwd, 'postcss.config.js');
+          configPath = options.configPath
+            ? options.configPath
+            : findup.sync(process.cwd(), 'postcss.config.js');
         } else {
-          configFolder = '';
+          configPath = '';
         }
-        const config = options.plugins
+
+        let config = options.plugins
           ? options.plugins
-          : require(path.join(configFolder, 'postcss.config.js'))({
-              env: process.env.NODE_ENV,
-            });
+          : require(path.join(configPath, 'postcss.config.js'));
+
+        if (typeof config === 'function') {
+          config = config({
+            env: process.env.NODE_ENV,
+          });
+        }
         let css = code.match(styleRegex)[0];
         if (options.escapeTemplateString || !hasCustomRegex) {
           css = css.split('`')[1];
