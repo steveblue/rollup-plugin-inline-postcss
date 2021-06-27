@@ -1,6 +1,6 @@
-module.exports = ctx => ({
+module.exports = (ctx) => ({
   plugins: {
-    'postcss-rgb-plz': {}
-    'postcss-csso': {}
-  }
-})
+    'postcss-csso': {},
+    'postcss-rgb-plz': {},
+  },
+});

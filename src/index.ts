@@ -27,17 +27,18 @@ export default function inlinePostCSS(options: any = {}) {
         punc = null;
       }
       try {
+        const cwd = options.cwd || __dirname;
         let configFolder;
         if (!options.plugins) {
-          configFolder = findup.sync(__dirname, 'postcss.config.js');
+          configFolder = findup.sync(cwd, 'postcss.config.js');
         } else {
           configFolder = '';
         }
         const config = options.plugins
           ? options.plugins
           : require(path.join(configFolder, 'postcss.config.js'))({
-              env: process.env.NODE_ENV,
-            });
+            env: process.env.NODE_ENV,
+          });
         let css = code.match(styleRegex)[0];
         if (options.escapeTemplateString || !hasCustomRegex) {
           css = css.split('`')[1];
@@ -53,8 +54,8 @@ export default function inlinePostCSS(options: any = {}) {
         const outputConfig = options.plugins
           ? options.plugins
           : Object.keys(config.plugins)
-              .filter((key) => config.plugins[key])
-              .map((key) => require(key));
+            .filter((key) => config.plugins[key])
+            .map((key) => require(key));
         return postcss(outputConfig)
           .process(css, opts)
           .then((result) => {

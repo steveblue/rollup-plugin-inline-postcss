@@ -2,11 +2,13 @@
   "name": "rollup-plugin-inline-postcss",
   "version": "2.0.0",
   "description": "Rollup plugin that transforms inline styling with PostCSS",
-  "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "lint": "eslint index.ts --fix",
-    "test": "npm run lint && jest"
+    "deploy": "./deploy.sh",
+    "prepare": "cp src/package.json dist/package.json && cp README.md dist/README.md",
+    "lint": "eslint src/index.ts --fix",
+    "test": "npm run lint && jest",
+    "version": "./version.sh"
   },
   "repository": {
     "type": "git",
@@ -42,6 +44,7 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^26.6.0",
+    "json-bump": "^1.0.2",
     "postcss-csso": "^5.0.0",
     "postcss-rgb-plz": "^2.0.2",
     "prettier": "^2.2.1",
