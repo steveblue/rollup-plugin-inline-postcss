@@ -1,9 +1,9 @@
-const css = () => {};
+const foo = () => {};
 
 class MyButtonComponent extends HTMLButtonElement {
   constructor() {
     super();
-    this.style = css`
+    this.style = foo`
       :host {
         background: #abcefe;
         cursor: pointer;

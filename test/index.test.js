@@ -8,52 +8,63 @@ function fixture(...args) {
   return path.join(__dirname, 'fixtures', ...args);
 }
 
-async function write({ input, outDir }) {
+async function write({ inputs, outDir }) {
   const jsCodePath = path.join(outDir, 'bundle.js');
 
   const bundleFromPlugins = await rollup({
-    input: fixture(input),
+    input: fixture(inputs[0]),
     plugins: [
       inlinePostCSS({
-        escapeTemplateString: true,
         plugins: [require('postcss-csso'), require('postcss-rgb-plz')],
       }),
     ],
   });
 
   const bundleFromPostCSSConfig = await rollup({
-    input: fixture(input),
+    input: fixture(inputs[2]),
     plugins: [
       inlinePostCSS({
-        styleRegex: /css\`((.|\n)*)\`(;)/gm,
-        escapeTemplateString: true,
+        styleRegex: /(?:foo`)((.|\n)+?)(?=(`(\n|;|,)))/gi,
       }),
     ],
   });
 
   const bundleFromExternalPostCSSConfig = await rollup({
-    input: fixture(input),
+    input: fixture(inputs[0]),
     plugins: [
       inlinePostCSS({
-        escapeTemplateString: true,
         configPath: path.join(__dirname, 'config'),
       }),
+    ],
+  });
+
+  const bundleWithMultipleCSS = await rollup({
+    input: fixture(inputs[1]),
+    plugins: [
+      inlinePostCSS({}),
     ],
   });
 
   await bundleFromPlugins.write({
     format: 'esm',
     file: path.join(outDir, 'bundle.js'),
+    sourcemap: true,
+    sourcemapFile: path.join(outDir, 'bundle.js.map')
   });
 
   await bundleFromPostCSSConfig.write({
     format: 'esm',
-    file: path.join(outDir, 'bundle.config.js'),
+    file: path.join(outDir, 'bundle.custom.js'),
   });
 
   await bundleFromExternalPostCSSConfig.write({
     format: 'esm',
     file: path.join(outDir, 'bundle.external.js'),
+  });
+
+  await bundleWithMultipleCSS.write({
+    format: 'esm',
+    file: path.join(outDir, 'bundle.multiple.js'),
   });
 
   return {
@@ -75,7 +86,7 @@ async function write({ input, outDir }) {
 
 test('inline css is processed', async () => {
   const res = await write({
-    input: 'component.js',
+    inputs: ['component.js', 'multiple.js', 'custom.js'],
     outDir: 'test/onExtract',
     options: {},
   });
@@ -85,4 +96,5 @@ test('inline css is processed', async () => {
   expect(await res.isMinified('bundle.config.js')).toBe(true);
   expect(await res.hasRGBColorValues('bundle.external.js')).toBe(true);
   expect(await res.isMinified('bundle.external.js')).toBe(true);
+  expect(await res.hasRGBColorValues('bundle.multiple.js')).toBe(true);
 });

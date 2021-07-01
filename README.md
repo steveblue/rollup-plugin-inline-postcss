@@ -6,6 +6,7 @@ Rollup plugin that transforms inline styling with PostCSS
 
 ```bash
 npm i rollup-plugin-inline-postcss --save-dev
+yarn add rollup-plugin-inline-postcss --dev
 ```
 
 ## Usage
@@ -27,7 +28,6 @@ export default {
 | include              | Files to include                                  |
 | exclude              | Files to exclude                                  |
 | styleRegex           | Custom regex for selecting CSS in file            |
-| escapeTemplateString | Set to `true` to escape template string           |
 | configPath           | Path to directory that contains postcss.config.js |
 
 ## Template Literals in JavaScript
@@ -48,10 +48,10 @@ css`
 `
 ```
 
-The default regex for selecting this template literal is:
+The default regex for selecting template literals in a file is:
 
 ```js
-/css\`((?:\\.|[^"\\])*)\`/g;
+/(?:css`)((.|\n)+?)(?=(`(\n|;|,)))/gi;
 ```
 
 ## Config

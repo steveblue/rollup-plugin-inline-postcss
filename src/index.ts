@@ -9,7 +9,7 @@ export default function inlinePostCSS(options: any = {}) {
   const filter = createFilter(options.include, options.exclude);
   const styleRegex = options.styleRegex
     ? options.styleRegex
-    : /(css\`((.|\n)*)\`)/g;
+    : /(?:css`)((.|\n)+?)(?=(`(\n|;|,)))/gi;
   const hasCustomRegex = options.styleRegex ? true : false;
   return {
     name: 'inline-postcss',
@@ -20,14 +20,20 @@ export default function inlinePostCSS(options: any = {}) {
       if (!code.match(styleRegex)) {
         return;
       }
-      let punc = code.match(styleRegex)[0][
-        code.match(styleRegex)[0].length - 1
-      ];
-      if (punc !== ',' && punc !== ';') {
-        punc = null;
-      }
+
       try {
+
         let configPath;
+
+        const postcssOptions = {
+          from: options.from ? path.join(process.cwd(), options.from) : id,
+          to: options.to ? path.join(process.cwd(), options.to) : id,
+          map: {
+            inline: false,
+            annotation: false,
+          },
+        };
+
         if (!options.plugins) {
           configPath = options.configPath
             ? options.configPath
@@ -45,36 +51,24 @@ export default function inlinePostCSS(options: any = {}) {
             env: process.env.NODE_ENV,
           });
         }
-        let css = code.match(styleRegex)[0];
-        if (options.escapeTemplateString || !hasCustomRegex) {
-          css = css.split('`')[1];
-        }
-        const opts = {
-          from: options.from ? path.join(process.cwd(), options.from) : id,
-          to: options.to ? path.join(process.cwd(), options.to) : id,
-          map: {
-            inline: false,
-            annotation: false,
-          },
-        };
+
         const outputConfig = options.plugins
           ? options.plugins
           : Object.keys(config.plugins)
-              .filter((key) => config.plugins[key])
-              .map((key) => require(key));
-        return postcss(outputConfig)
-          .process(css, opts)
-          .then((result) => {
-            code = code.replace(
-              styleRegex,
-              `\`${result.css}\`${punc ? punc : ''}`
-            );
-            const map = result.map
-              ? JSON.parse((result as any).map)
-              : { mappings: '' };
+            .filter((key) => config.plugins[key])
+            .map((key) => require(key));
+
+        const matches = code.match(styleRegex);
+
+        return Promise.all(matches.map(css => postcss(outputConfig)
+          .process(css.split('`')[1], postcssOptions))).then((transforms: any) => {
+            let mappings = '';
+            transforms.forEach((transform, index) => {
+              code = code.replace(matches[index].split('`')[1], transform.css);
+            });
             return {
               code,
-              map,
+              map: null,
             };
           });
       } catch (error) {
