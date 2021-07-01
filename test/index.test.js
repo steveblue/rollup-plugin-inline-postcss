@@ -92,8 +92,8 @@ test('inline css is processed', async () => {
   });
   expect(await res.hasRGBColorValues('bundle.js')).toBe(true);
   expect(await res.isMinified('bundle.js')).toBe(true);
-  expect(await res.hasRGBColorValues('bundle.config.js')).toBe(true);
-  expect(await res.isMinified('bundle.config.js')).toBe(true);
+  expect(await res.hasRGBColorValues('bundle.custom.js')).toBe(true);
+  expect(await res.isMinified('bundle.custom.js')).toBe(true);
   expect(await res.hasRGBColorValues('bundle.external.js')).toBe(true);
   expect(await res.isMinified('bundle.external.js')).toBe(true);
   expect(await res.hasRGBColorValues('bundle.multiple.js')).toBe(true);
