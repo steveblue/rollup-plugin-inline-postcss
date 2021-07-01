@@ -8,63 +8,23 @@ function fixture(...args) {
   return path.join(__dirname, 'fixtures', ...args);
 }
 
-async function write({ inputs, outDir }) {
+async function write({ input, output, plugin, outDir, options }) {
+
   const jsCodePath = path.join(outDir, 'bundle.js');
 
-  const bundleFromPlugins = await rollup({
-    input: fixture(inputs[0]),
+  const bundle = await rollup({
+    input: fixture(input),
     plugins: [
-      inlinePostCSS({
-        plugins: [require('postcss-csso'), require('postcss-rgb-plz')],
-      }),
+      plugin,
     ],
   });
 
-  const bundleFromPostCSSConfig = await rollup({
-    input: fixture(inputs[2]),
-    plugins: [
-      inlinePostCSS({
-        styleRegex: /(?:foo`)((.|\n)+?)(?=(`(\n|;|,)))/gi,
-      }),
-    ],
-  });
-
-  const bundleFromExternalPostCSSConfig = await rollup({
-    input: fixture(inputs[0]),
-    plugins: [
-      inlinePostCSS({
-        configPath: path.join(__dirname, 'config'),
-      }),
-    ],
-  });
-
-  const bundleWithMultipleCSS = await rollup({
-    input: fixture(inputs[1]),
-    plugins: [
-      inlinePostCSS({}),
-    ],
-  });
-
-  await bundleFromPlugins.write({
+  await bundle.write({
     format: 'esm',
-    file: path.join(outDir, 'bundle.js'),
+    file: path.join(outDir, output),
     sourcemap: true,
-    sourcemapFile: path.join(outDir, 'bundle.js.map')
-  });
-
-  await bundleFromPostCSSConfig.write({
-    format: 'esm',
-    file: path.join(outDir, 'bundle.custom.js'),
-  });
-
-  await bundleFromExternalPostCSSConfig.write({
-    format: 'esm',
-    file: path.join(outDir, 'bundle.external.js'),
-  });
-
-  await bundleWithMultipleCSS.write({
-    format: 'esm',
-    file: path.join(outDir, 'bundle.multiple.js'),
+    sourcemapFile: path.join(outDir, `${output}.map`),
+    ...options
   });
 
   return {
@@ -81,20 +41,70 @@ async function write({ inputs, outDir }) {
       const style = file.match(/\`((.|\n)*)\`/gm)[0];
       return /\r|\n/.exec(style) == null ? true : false;
     },
+    hasSourceMap(bundle) {
+      const file = fs.readFileSync(path.join(outDir, bundle), 'utf8');
+      return file.includes('sourceMappingURL');
+    }
   };
+
 }
 
-test('inline css is processed', async () => {
+test('should process with plugins declared in rollup.config.js', async () => {
   const res = await write({
-    inputs: ['component.js', 'multiple.js', 'custom.js'],
+    input: 'component.js',
+    output: 'bundle.js',
     outDir: 'test/onExtract',
-    options: {},
+    plugin: inlinePostCSS({
+      plugins: [require('postcss-csso'), require('postcss-rgb-plz')],
+    }),
+    options: {
+      sourcemap: false
+    },
   });
   expect(await res.hasRGBColorValues('bundle.js')).toBe(true);
   expect(await res.isMinified('bundle.js')).toBe(true);
-  expect(await res.hasRGBColorValues('bundle.custom.js')).toBe(true);
-  expect(await res.isMinified('bundle.custom.js')).toBe(true);
-  expect(await res.hasRGBColorValues('bundle.external.js')).toBe(true);
-  expect(await res.isMinified('bundle.external.js')).toBe(true);
-  expect(await res.hasRGBColorValues('bundle.multiple.js')).toBe(true);
+  expect(await res.hasSourceMap('bundle.js')).toBe(false);
 });
+
+test('should process file with custom regex', async () => {
+  const res = await write({
+    input: 'custom.js',
+    output: 'custom.js',
+    outDir: 'test/onExtract',
+    plugin: inlinePostCSS({
+      styleRegex: /(?:foo`)((.|\n)+?)(?=(`(\n|;|,)))/gi,
+    }),
+    options: {},
+  });
+  expect(await res.hasRGBColorValues('custom.js')).toBe(true);
+  expect(await res.isMinified('custom.js')).toBe(true);
+});
+
+test('should reference postcss.config.js', async () => {
+  const res = await write({
+    input: 'component.js',
+    output: 'config.js',
+    outDir: 'test/onExtract',
+    plugin: inlinePostCSS({
+      configPath: path.join(__dirname, 'config'),
+    }),
+    options: {},
+  });
+  expect(await res.hasRGBColorValues('config.js')).toBe(true);
+  expect(await res.isMinified('config.js')).toBe(true);
+});
+
+test('should process multiple css declarations', async () => {
+  const res = await write({
+    input: 'multiple.js',
+    output: 'multiple.js',
+    outDir: 'test/onExtract',
+    plugin: inlinePostCSS(),
+    options: {},
+  });
+  expect(await res.hasRGBColorValues('multiple.js')).toBe(true);
+  expect(await res.hasSourceMap('multiple.js')).toBe(true);
+  // expect(await res.isMinified('multiple.js')).toBe(true);
+});
+
+
