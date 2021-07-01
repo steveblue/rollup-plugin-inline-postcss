@@ -4,8 +4,7 @@
   "description": "Rollup plugin that transforms inline styling with PostCSS",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "deploy": "./deploy.sh",
-    "prepare": "cp src/package.json dist/package.json && cp README.md dist/README.md && cp CHANGELOG.md dist/CHANGELOG.md",
+    "build:dist": "cp src/package.json dist/package.json && cp README.md dist/README.md && cp CHANGELOG.md dist/CHANGELOG.md",
     "prettier": "prettier --write .",
     "test": "jest",
     "version": "./version.sh"
