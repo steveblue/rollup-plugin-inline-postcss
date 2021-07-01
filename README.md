@@ -23,12 +23,13 @@ export default {
 
 ## Options
 
-| Property             | Description                                       |
-| -------------------- | ------------------------------------------------- |
-| include              | Files to include                                  |
-| exclude              | Files to exclude                                  |
-| styleRegex           | Custom regex for selecting CSS in file            |
-| configPath           | Path to directory that contains postcss.config.js |
+| Property   | Description                                                              |
+| ---------- | ------------------------------------------------------------------------ |
+| include    | Files to include                                                         |
+| exclude    | Files to exclude                                                         |
+| env        | Environment variable, defaults to `process.env.NODE_ENV` where available |
+| styleRegex | Custom regex for selecting CSS in file                                   |
+| configPath | Path to directory that contains postcss.config.js                        |
 
 ## Template Literals in JavaScript
 

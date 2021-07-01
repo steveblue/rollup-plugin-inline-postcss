@@ -22,8 +22,13 @@ export default function inlinePostCSS(options: any = {}) {
       }
 
       try {
-
         let configPath;
+
+        const env = process.env.NODE_ENV
+          ? options.env
+            ? options.env
+            : null
+          : null;
 
         const postcssOptions = {
           from: options.from ? path.join(process.cwd(), options.from) : id,
@@ -48,29 +53,32 @@ export default function inlinePostCSS(options: any = {}) {
 
         if (typeof config === 'function') {
           config = config({
-            env: process.env.NODE_ENV,
+            env,
           });
         }
 
         const outputConfig = options.plugins
           ? options.plugins
           : Object.keys(config.plugins)
-            .filter((key) => config.plugins[key])
-            .map((key) => require(key));
+              .filter((key) => config.plugins[key])
+              .map((key) => require(key));
 
         const matches = code.match(styleRegex);
 
-        return Promise.all(matches.map(css => postcss(outputConfig)
-          .process(css.split('`')[1], postcssOptions))).then((transforms: any) => {
-            let mappings = '';
-            transforms.forEach((transform, index) => {
-              code = code.replace(matches[index].split('`')[1], transform.css);
-            });
-            return {
-              code,
-              map: null,
-            };
+        return Promise.all(
+          matches.map((css) =>
+            postcss(outputConfig).process(css.split('`')[1], postcssOptions)
+          )
+        ).then((transforms: any) => {
+          let mappings = '';
+          transforms.forEach((transform, index) => {
+            code = code.replace(matches[index].split('`')[1], transform.css);
           });
+          return {
+            code,
+            map: null,
+          };
+        });
       } catch (error) {
         if (options.failOnError) {
           this.error(error.message);

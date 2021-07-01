@@ -7,6 +7,7 @@
     "build:dist": "cp src/package.json dist/package.json && cp README.md dist/README.md && cp CHANGELOG.md dist/CHANGELOG.md",
     "prettier": "prettier --write .",
     "test": "jest",
+    "test:clean": "rm -rf test/extract",
     "version": "./version.sh"
   },
   "repository": {
