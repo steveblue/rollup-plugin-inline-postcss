@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-inline-postcss",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Rollup plugin that transforms inline styling with PostCSS",
   "main": "index.js",
   "author": "Steve Belovarich",
@@ -21,7 +21,7 @@
   "dependencies": {
     "findup": "^0.1.5",
     "postcss": "^8.0.0",
-    "rollup": "^1.0.0",
+    "rollup": "^2.0.0",
     "rollup-pluginutils": "^2.3.3"
   }
 }
