@@ -5,18 +5,32 @@ import { createFilter } from 'rollup-pluginutils';
 
 const postcss = require('postcss');
 
-export default function inlinePostCSS(options: any = {}) {
+declare interface InlinePostCSSOptions {
+  configPath?: string;
+  include?: string[];
+  exclude?: string[];
+  env?: string;
+  failOnError?: boolean;
+  from?: string;
+  plugins?: any[];
+  styleDelineator?: string;
+  styleRegex?: RegExp;
+  to?: string;
+}
+
+export default function inlinePostCSS(options: InlinePostCSSOptions = {}) {
   const filter = createFilter(options.include, options.exclude);
   const styleRegex = options.styleRegex
     ? options.styleRegex
     : /(?:css`)((.|\n)+?)(?=(`(\n|;|,)))/gi;
-  const hasCustomRegex = options.styleRegex ? true : false;
+
   return {
     name: 'inline-postcss',
     transform(code, id) {
       if (!filter(id)) {
         return;
       }
+
       if (!code.match(styleRegex)) {
         return;
       }
@@ -63,16 +77,27 @@ export default function inlinePostCSS(options: any = {}) {
               .filter((key) => config.plugins[key])
               .map((key) => require(key));
 
-        const matches = code.match(styleRegex);
+        const styleDelineator = options.styleDelineator
+          ? options.styleDelineator
+          : /`/;
+
+        let matches = code.match(styleRegex);
 
         return Promise.all(
-          matches.map((css) =>
-            postcss(outputConfig).process(css.split('`')[1], postcssOptions)
+          matches.map((css: string) =>
+            postcss(outputConfig).process(
+              styleDelineator ? css.split(styleDelineator)[1] : css,
+              postcssOptions
+            )
           )
-        ).then((transforms: any) => {
-          let mappings = '';
+        ).then((transforms: any[]) => {
           transforms.forEach((transform, index) => {
-            code = code.replace(matches[index].split('`')[1], transform.css);
+            code = code.replace(
+              styleDelineator
+                ? matches[index].split(styleDelineator)[1]
+                : matches[index],
+              transform.css
+            );
           });
           return {
             code,

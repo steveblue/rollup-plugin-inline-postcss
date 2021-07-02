@@ -76,6 +76,35 @@ test('should process file with custom regex', async () => {
   expect(await res.isMinified('custom.js')).toBe(true);
 });
 
+test('should process file with legacy custom regex', async () => {
+  const res = await write({
+    input: 'component.js',
+    output: 'custom-legacy.js',
+    outDir: 'test/extract',
+    plugin: inlinePostCSS({
+      styleRegex: /css\`((?:\\.|[^"\\])*)\`/gi,
+    }),
+    options: {},
+  });
+  expect(await res.hasRGBColorValues('custom-legacy.js')).toBe(true);
+  expect(await res.isMinified('custom-legacy.js')).toBe(true);
+});
+
+test('should process file with style template', async () => {
+  const res = await write({
+    input: 'custom-template.js',
+    output: 'custom-template.js',
+    outDir: 'test/extract',
+    plugin: inlinePostCSS({
+      styleRegex: /(?:<style>)((.|\n)+?)(?=(<\/style>))/gi,
+      styleDelineator: /<\/?style>/g,
+      configPath: path.join(__dirname, 'config'),
+    }),
+    options: {},
+  });
+  expect(await res.hasRGBColorValues('custom-template.js')).toBe(true);
+});
+
 test('should reference postcss.config.js', async () => {
   const res = await write({
     input: 'component.js',
