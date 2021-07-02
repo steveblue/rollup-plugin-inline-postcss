@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 3.0.1
+
+BREAKING CHANGE:
+
+- fix: `styleDelineator` option changed to `styleDelimiter`. Ugh, English.
+
 ## 3.0.0
 
 - feat: support multiple style declarations in same file

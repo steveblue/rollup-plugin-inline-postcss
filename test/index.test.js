@@ -97,7 +97,7 @@ test('should process file with style template', async () => {
     outDir: 'test/extract',
     plugin: inlinePostCSS({
       styleRegex: /(?:<style>)((.|\n)+?)(?=(<\/style>))/gi,
-      styleDelineator: /<\/?style>/g,
+      styleDelimiter: /<\/?style>/g,
       configPath: path.join(__dirname, 'config'),
     }),
     options: {},

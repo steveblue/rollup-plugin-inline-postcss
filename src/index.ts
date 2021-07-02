@@ -13,7 +13,7 @@ declare interface InlinePostCSSOptions {
   failOnError?: boolean;
   from?: string;
   plugins?: any[];
-  styleDelineator?: string;
+  styleDelimiter?: string;
   styleRegex?: RegExp;
   to?: string;
 }
@@ -77,8 +77,8 @@ export default function inlinePostCSS(options: InlinePostCSSOptions = {}) {
               .filter((key) => config.plugins[key])
               .map((key) => require(key));
 
-        const styleDelineator = options.styleDelineator
-          ? options.styleDelineator
+        const styleDelimiter = options.styleDelimiter
+          ? options.styleDelimiter
           : /`/;
 
         let matches = code.match(styleRegex);
@@ -86,15 +86,15 @@ export default function inlinePostCSS(options: InlinePostCSSOptions = {}) {
         return Promise.all(
           matches.map((css: string) =>
             postcss(outputConfig).process(
-              styleDelineator ? css.split(styleDelineator)[1] : css,
+              styleDelimiter ? css.split(styleDelimiter)[1] : css,
               postcssOptions
             )
           )
         ).then((transforms: any[]) => {
           transforms.forEach((transform, index) => {
             code = code.replace(
-              styleDelineator
-                ? matches[index].split(styleDelineator)[1]
+              styleDelimiter
+                ? matches[index].split(styleDelimiter)[1]
                 : matches[index],
               transform.css
             );
